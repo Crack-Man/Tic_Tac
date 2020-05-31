@@ -1,0 +1,412 @@
+body {
+    background-color: #000033;
+    background-image: url("../images/background.png");
+    background-size: 10% auto;
+    background-attachment: scroll;
+    background-repeat: repeat;
+}
+
+@font-face {
+ 	font-family: SF Distant Galaxy Cyrillic;   
+    src: url(../font/SF Distant Galaxy Cyrillic.ttf);
+}
+
+.N0 {
+	position: fixed;
+    width: 100%;
+    height: 20%;
+	top: 0;
+	left:0;
+}
+
+.N1 {
+    background-color: #060345;
+    border-bottom: solid 3px #00e600;
+    width: 100%;
+	height:70%;
+    
+  
+    font-family: SF Distant Galaxy Cyrillic;
+    font-size: 100px;
+	line-height: 140%;
+    color: #00e600;
+    text-align: center;
+}
+
+
+.N2 {
+    display: flex;
+    #border: solid 3px #00e600;
+    width: 100%;
+    height: 30%;
+}
+
+.N3 {
+    display: inline;
+    background-color: #060345;
+    border: solid 3px #00e600;
+    font-family: SF Distant Galaxy Cyrillic;
+    font-size: 50px;
+    text-align: center;
+	color: #00e600;
+    width: 50%;
+    height: 100%;
+    margin: -3px 0 0 0;
+	line-height: 110%;
+	cursor: pointer;
+}
+
+.N3:hover {
+	background-color: #060370;
+}
+
+.F0 {
+	width: 80%;
+    height: 100%;
+	margin: 13% 10% 0 10%;
+	#background-color: #060345;	
+	cursor: default;
+		font-family: SF Distant Galaxy Cyrillic;
+    font-size: 25px;
+    text-align: center;
+	line-height: 185%;
+}
+.F1 {
+	display: flex;
+	width: 100%;
+    height: 5%;
+	margin: 0% 0% 1% 0%;
+	background-color: #060345;
+
+}
+.F2 {
+	display: inline;
+	width: 13%;
+    height: 100%;
+	background-color: #060345;
+	color: #ffff00;
+	border: solid 3px #ffff00;
+
+}
+.F3 {
+	display: inline;
+	width: 35%;
+    height: 100%;
+	background-color: #060345;
+	color: #ffff00;
+	border: solid 3px #ffff00;
+
+}
+.F4 {
+	display: inline;
+	width: 53%;
+    height: 113%;
+	background-color: #060345;
+	color: #ffff00;
+	border: solid 3px #ffff00;
+	font-family: SF Distant Galaxy Cyrillic;
+    font-size: 25px;
+    text-align: center;
+	line-height: 185%;
+	cursor: pointer;
+}
+
+.F4:hover {
+	background-color: #060370;
+}
+
+.image {
+	border: solid 3px #ffff00;
+	width: 4%;
+	height: 100%;
+	
+}
+
+.stat {
+	border: solid 3px #00e600;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	height: 100px;
+	width: 225px;
+	background-color: #060345;
+	color: #00e600;
+}
+
+.stat1 {
+	
+	height: 25%;
+	width: 100%;
+	background-color: #060345;
+	color: #00e600;
+	font-family: SF Distant Galaxy Cyrillic;
+    font-size: 25px;
+    text-align: center;
+	margin: 0 0 0 0;
+}
+.stat2 {
+	display: flex;
+	height: 25%;
+	width: 100%;
+	margin: 0 0 0% 0;
+}
+.stat3 {
+	display: inline;
+	height: 100%;
+	width: 70%;
+	background-color: #060345;
+	color: #00e600;
+	font-family: SF Distant Galaxy Cyrillic;
+    font-size: 20px;
+    text-align: right;
+
+}
+.stat4 {
+	display: inline;
+	height: 100%;
+	width: 30%;
+	background-color: #060345;
+	color: #00e600;
+	font-family: SF Distant Galaxy Cyrillic;
+    font-size: 20px;
+    text-align: left;
+	margin: 0 0 0 5px;
+}
+.vhod {
+	display: flex;
+	height: 10px;
+	width: 75px;
+	text-align: center;
+	font-family: SF Distant Galaxy Cyrillic;
+    font-size: 20px;
+	color: #00e600;
+	position: fixed;
+	top: 5;
+	right: 175px;
+	z-index: 1;
+	cursor: pointer;
+}
+.reg {
+	display: flex;
+	text-align: center;
+	font-family: SF Distant Galaxy Cyrillic;
+    font-size: 20px;
+	color: #00e600;
+	position: fixed;
+	top: 5px;
+	right: 10px;
+	z-index: 1;
+	cursor: pointer;
+}
+@media screen and (min-width:1620px) and (max-width:1799px) {
+.F0 {
+	margin: 14% 8.5% 0 8.5%;
+	width: 83%;
+}
+}
+
+@media screen and (min-width:1440px) and (max-width:1619px) {
+.F0 {
+	margin: 16% 4.5% 0 4.5%;
+	width: 91%;
+}
+}
+@media screen and (min-width:1260px) and (max-width:1439px) {
+.F0 {
+	margin: 17% 1% 0 1%;
+	width: 98%;
+	font-size: 22px;
+}
+}
+@media screen and (min-width:1080px) and (max-width:1259px) {
+.N1 {
+    font-size: 90px;
+}
+.N3 {
+    font-size: 45px;
+}
+.F0 {
+	width: 99%;
+	font-size: 18px;
+	margin: 20% 0.5% 0 0.5%;
+}
+}
+@media screen and (min-width:900px) and (max-width:1079px) {
+.N1 {
+    font-size: 80px;
+}
+.N3 {
+    font-size: 40px;
+}
+.F0 {
+	width: 99%;
+	font-size: 15px;
+	margin: 24% 0.5% 0 0.5%;
+}
+}
+@media screen and (min-width:720px) and (max-width:899px) {
+.N1 {
+    font-size: 60px;
+}
+.N3 {
+    font-size: 35px;
+}
+.F0 {
+	width: 99%;
+	font-size: 12px;
+	margin: 30% 0.5% 0 0.5%;
+}
+}
+@media screen and (min-width:540px) and (max-width:719px) {
+.N1 {
+    font-size: 45px;
+}
+.N3 {
+    font-size: 28px;
+}
+.F0 {
+	width: 99%;
+	font-size: 9px;
+	margin: 40% 0.5% 0 0.5%;
+}
+}
+@media screen and (min-width:360px) and (max-width:539px) {
+.N1 {
+    font-size: 38px;
+}
+.N3 {
+    font-size: 24px;
+}
+.F0 {
+	width: 99%;
+	font-size: 7px;
+	margin: 50% 1% 0 1%;
+}
+}
+@media screen and (min-width:180px) and (max-width:359px) {
+.N1 {
+    font-size: 30px;
+}
+.N3 {
+    font-size: 20px;
+}
+.F0 {
+	width: 99%;
+	font-size: 7px;
+	margin: 50% 0.5% 0 0.5%;
+}
+}
+
+
+
+@media screen and (min-height:960px) and (max-height:1080px) {
+.N0 {
+    width: 100%;
+    height: 20%;
+}
+.N1 {
+    width: 100%;
+	height:70%;
+	line-height: 130%;
+}
+}
+@media screen and (min-height:840px) and (max-height:959px) {
+.N0 {
+    width: 100%;
+    height: 18%;
+}
+.N1 {
+    background-color: #060345;
+    width: 100%;
+	height:70%;
+	line-height: 120%;
+}
+}
+@media screen and (min-height:720px) and (max-height:839px) {	
+.N0 {
+    width: 100%;
+    height: 20%;
+}
+.N1 {
+    background-color: #060345;
+    width: 100%;
+	height:70%;
+	line-height: 110%;
+}
+}
+@media screen and (min-height:600px) and (max-height:719px) {
+.N0 {
+    width: 100%;
+    height: 20%;
+
+}
+.N1 {
+    background-color: #060345;
+    width: 100%;
+	height:70%;
+	line-height: 100%;
+}
+}
+@media screen and (min-height:480px) and (max-height:599px) {
+.N0 {
+    width: 100%;
+    height: 25%;
+}
+.N1 {
+    background-color: #060345;
+    width: 100%;
+	height:70%;
+	line-height: 90%;
+}
+}
+@media screen and (min-height:400px) and (max-height:479px) {
+.N0 {
+    width: 100%;
+    height: 28%;
+}
+.N1 {
+    background-color: #060345;
+    width: 100%;
+	height:70%;
+	line-height: 85%;
+}
+}
+@media screen and (min-height:340px) and (max-height:399px) {
+.N0 {
+    width: 100%;
+    height: 32%;
+
+}
+.N1 {
+    background-color: #060345;
+    width: 100%;
+	height:70%;
+	line-height: 80%;
+}
+}
+@media screen and (min-height:280px) and (max-height:339px) {
+.N0 {
+    width: 100%;
+    height: 35%;
+
+}
+.N1 {
+    background-color: #060345;
+    width: 100%;
+	height:70%;
+	line-height: 80%;
+}
+}
+@media screen and (min-height:220px) and (max-height:279px) {
+.N0 {
+    width: 100%;
+    height: 37%;
+
+}
+.N1 {
+    background-color: #060345;
+    width: 100%;
+	height:70%;
+	line-height: 75%;
+}
+}

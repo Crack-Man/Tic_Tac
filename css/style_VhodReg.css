@@ -1,0 +1,192 @@
+body {
+    background-color: #000033;
+    background-image: url("../images/background.png");
+    background-size: 10% auto;
+    background-attachment: scroll;
+    background-repeat: repeat;
+}
+
+@font-face {
+ 	font-family: SF Distant Galaxy Cyrillic;   
+    src: url(../font/SF Distant Galaxy Cyrillic.ttf);
+}
+A {
+	color: #00e600;
+	text-decoration: none;
+}
+A:visited {
+	color: #00e600;
+	text-decoration: none;
+}
+A:active {
+	color: #00e600;
+	text-decoration: none;
+}
+
+.N0 {
+	position: fixed;;
+    width: 100%;
+    height: 20%;
+	top: 0;
+	left:0;
+	cursor: default;
+}
+
+.N1 {
+    background-color: #060345;
+    border-bottom: solid 3px #00e600;
+    width: 100%;
+	height:70%;
+    
+  
+    font-family: SF Distant Galaxy Cyrillic;
+    font-size: 100px;
+	line-height: 140%;
+    color: #00e600;
+    text-align: center;
+}
+
+.vhod {
+	display: flex;
+	height: 10px;
+	width: 75px;
+	text-align: center;
+	font-family: SF Distant Galaxy Cyrillic;
+    font-size: 20px;
+	color: #00e600;
+	position: fixed;
+	top: 5;
+	right: 175px;
+	z-index: 1;
+	cursor: pointer;
+}
+.reg {
+	display: flex;
+	text-align: center;
+	font-family: SF Distant Galaxy Cyrillic;
+    font-size: 20px;
+	color: #00e600;
+	position: fixed;
+	top: 5px;
+	right: 10px;
+	z-index: 1;
+	cursor: pointer;
+}
+.blockvhod {
+	position: fixed;
+	top: 35%;
+	left:30%;
+	height:30%;
+	width:40%;
+}
+.blockreg {
+	position: fixed;
+	top: 30%;
+	left: 30%;
+	height:30%;
+	width:40%;
+}
+
+.text {
+	border: solid 3px #00e600;
+	background:#060345;
+	display: block;
+	font-family: SF Distant Galaxy Cyrillic;
+	width: 60%;
+	height: 10%;
+    font-size: 20px;
+	color: #00e600;
+	margin:
+}
+
+.PASSWORD {
+	border-top: solid 1px #00e600;
+	border-bottom: solid 1px #00e600;
+	border-right: solid 3px #00e600;
+	border-left: solid 3px #00e600;
+	background:#060345;
+	display: block;
+	font-family: SF Distant Galaxy Cyrillic;
+	height:33.33%;
+	width:100%;
+    font-size: 30px;
+	color: #00e600;
+	text-align: center;
+}
+
+.E-MAIL {
+	border-top: solid 3px #00e600;
+	border-bottom: solid 1px #00e600;
+	border-right: solid 3px #00e600;
+	border-left: solid 3px #00e600;
+	background:#060345;
+	display: block;
+	font-family: SF Distant Galaxy Cyrillic;
+	height:33.33%;
+	width:100%;
+    font-size: 30px;
+	color: #00e600;
+	text-align: center;
+}
+
+.vvod {
+	border-top: solid 1px #00e600;
+	border-bottom: solid 3px #00e600;
+	border-right: solid 3px #00e600;
+	border-left: solid 3px #00e600;
+	background:#060345;
+	display: block;
+	font-family: SF Distant Galaxy Cyrillic;
+	height:33.33%;
+	width:100%;
+    font-size: 30px;
+	color: #00e600;
+	text-align: center;
+}
+
+.vvod:hover {
+	background-color: #060370;
+}
+
+.glavnaya {
+	text-align: center;
+	font-family: SF Distant Galaxy Cyrillic;
+    font-size: 20px;
+	color: #00e600;
+	position: fixed;
+	top: 5px;
+	left: 10px;
+	z-index: 1;
+	cursor: pointer;	
+}
+
+@media screen and (min-width:1080px) and (max-width:1259px) {
+.N1 {
+    font-size: 90px;
+}
+}
+@media screen and (min-width:900px) and (max-width:1079px) {
+.N1 {
+    font-size: 80px;
+}
+}
+@media screen and (min-width:720px) and (max-width:899px) {
+.N1 {
+    font-size: 60px;
+}
+}
+@media screen and (min-width:540px) and (max-width:719px) {
+.N1 {
+    font-size: 45px;
+}
+}
+@media screen and (min-width:360px) and (max-width:539px) {
+.N1 {
+    font-size: 38px;
+}
+}
+@media screen and (min-width:180px) and (max-width:359px) {
+.N1 {
+    font-size: 30px;
+}
+}
