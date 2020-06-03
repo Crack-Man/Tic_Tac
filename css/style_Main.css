@@ -8,7 +8,7 @@ body {
 
 @font-face {
  	font-family: SF Distant Galaxy Cyrillic;   
-    src: url(../font/SF Distant Galaxy Cyrillic.ttf);
+    src: url(/font/SF_Distant_Galaxy_Cyrillic.ttf);
 }
 
 .N0 {

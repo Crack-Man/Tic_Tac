@@ -18,11 +18,14 @@
 		</div>
 	</div>
 	
-	<form class="blockvhod" method="post">
-		<input class="E-MAIL" type="text" name="E-MAIL" placeholder="E-MAIL">
-		<input class="PASSWORD" type="text" name="PASSWORD" placeholder="PASSWORD">
-		<input class="vvod" type="submit" name="vvod" value="ВОЙТИ" autocomplete="off">
+	<form class="blockvhod" id="vhod" method="post">
+		<input class="E-MAIL" id="authEmail" type="text" name="E-MAIL" placeholder="E-MAIL">
+		<input class="PASSWORD" id="authPassword" type="text" name="PASSWORD" placeholder="PASSWORD">
+		<input class="vvod" type="submit" name="submitAuth" value="ВОЙТИ" autocomplete="off">
+		<div id="errorauth"></div>
 	</form>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="index.js"></script>
 </body>
 
 </html>

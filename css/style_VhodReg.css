@@ -6,9 +6,34 @@ body {
     background-repeat: repeat;
 }
 
+.shadow {
+	display: block;
+	left: 0px;
+	top: 0px;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.6);
+	z-index: 100;
+}
+
+.Error {
+	background-color: #060345;
+    border-bottom: solid 3px #00e600;
+    height:10%;
+	width:100%;
+    
+  
+    font-family: SF Distant Galaxy Cyrillic;
+    font-size: 18px;
+	line-height: 140%;
+    color: #00e600;
+    text-align: center;
+}
+
 @font-face {
  	font-family: SF Distant Galaxy Cyrillic;   
-    src: url(../font/SF Distant Galaxy Cyrillic.ttf);
+    src: url(/font/SF_Distant_Galaxy_Cyrillic.ttf);
 }
 A {
 	color: #00e600;
@@ -46,38 +71,49 @@ A:active {
     text-align: center;
 }
 
+.login {
+	display: none;
+	font-family: SF Distant Galaxy Cyrillic;
+	font-size: 20px;
+	color: #00e600;
+	position: fixed;
+	top: 5px;
+	left: 5px;
+}
+
 .vhod {
-	display: flex;
-	height: 10px;
-	width: 75px;
+	display: none;
+	height: 20px;
+	width: 100px;
 	text-align: center;
 	font-family: SF Distant Galaxy Cyrillic;
     font-size: 20px;
 	color: #00e600;
 	position: fixed;
 	top: 5;
-	right: 175px;
-	z-index: 1;
+	right: 0px;
+	z-index: 100;
 	cursor: pointer;
 }
 .reg {
-	display: flex;
+	display: none;
 	text-align: center;
 	font-family: SF Distant Galaxy Cyrillic;
     font-size: 20px;
 	color: #00e600;
 	position: fixed;
 	top: 5px;
-	right: 10px;
-	z-index: 1;
+	right: 10px;	
 	cursor: pointer;
 }
 .blockvhod {
+	display: block;
 	position: fixed;
 	top: 35%;
 	left:30%;
 	height:30%;
 	width:40%;
+	z-index: 200;
 }
 .blockreg {
 	position: fixed;
@@ -96,7 +132,6 @@ A:active {
 	height: 10%;
     font-size: 20px;
 	color: #00e600;
-	margin:
 }
 
 .PASSWORD {
@@ -138,10 +173,12 @@ A:active {
 	display: block;
 	font-family: SF Distant Galaxy Cyrillic;
 	height:33.33%;
-	width:100%;
+	width:98.7%;
+	line-height: 280%;
     font-size: 30px;
 	color: #00e600;
 	text-align: center;
+	cursor: pointer;
 }
 
 .vvod:hover {
