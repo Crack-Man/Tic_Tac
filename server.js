@@ -95,8 +95,42 @@ WebSocket.on('connection', ws => {
                 });
             }
         } else if(message.type == 'game') {
-            if(message.data == 'createGame') {
-                
+            if(message.subtype == 'createGame') {
+                let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                conn.query('SELECT * FROM users WHERE `login` = "' + message.data.login + '"', function(error, results, fields) {
+                    if(results.length != 0) {
+                        idHost = results[0].id;
+                        conn.end();
+                        conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                        conn.connect();
+                        conn.query('SELECT * FROM games WHERE `idHost` = ' + idHost, function(error, results, fields) {
+                            if(results.length == 0) {
+                                conn.end();
+                                conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                                conn.connect();
+                                conn.query('SELECT * FROM games WHERE `idGuest` = ' + idHost, function(error, results, fields) {
+                                    if(results.length == 0) {
+                                        conn.end();
+                                        conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                                        conn.connect();
+                                        conn.query('INSERT INTO games VALUES (id,' + idHost + ', 0)');
+                                        conn.end();
+                                        console.log('Вы можете создать комнату');
+                                        ws.send(JSON.stringify({type: 'game', subtype: 'createGame', total: 'allow'}));
+                                    } else {
+                                        console.log('Невозможно создать комнату');
+                                        ws.send(JSON.stringify({type: 'game', subtype: 'createGame', total: 'ban'}));
+                                        conn.end();
+                                    }
+                                });
+                            } else {
+                                console.log('Невозможно создать комнату');
+                                ws.send(JSON.stringify({type: 'game', subtype: 'createGame', total: 'ban'}));
+                                conn.end();
+                            }
+                        });
+                    }
+                });
             }
         }
     });

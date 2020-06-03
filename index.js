@@ -37,22 +37,13 @@ socket.onmessage = function(event) {
             pushMainContent(message.data.login);
         }
     }
-    if(message.type == 'messages') {
-        if(message.result == 'generateSuccess') {
-            let messages_all = JSON.parse(message.total), messages_html = '<div class="vhod">', messages_fromrep = [];
-            for(let key in messages_fromrep) {
-                let temp = 0;
-                for(let skey in messages_fromrep) {
-                    if(messages_fromrep[skey] == messages_all[key].from) {
-                        temp = 1;
-                    }
-                }
-                if(temp == 1) {continue;}
-                else {
-                    messages_html += '<div class="messageMain>"' + messages_all[key].from + ': ' + messages_all[key].msg + '</div>'
-                }
+    if(message.type == 'game') {
+        if(message.subtype == 'createGame') {
+            if(message.total == 'allow') {
+                field = document.getElementById('field');
+                lg = document.getElementById('login').innerHTML;
+                field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ lg +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3">НИК ВОШЕДШЕГО</div><img id="delete" class="image" src="images/delete.png"></div>' + field.innerHTML;
             }
-            document.getElementById('vhod').innerHTML = messages_html + '</div>';
         }
     }
 }
@@ -66,8 +57,9 @@ $('#submitAuth').click(sendDataAuth);
 
 
 function createGame() {
+    lg = document.getElementById('login').innerHTML;
     console.log('Создаём игру');
-    socket.send(JSON.stringify({type: 'game', data: 'createGame'}));
+    socket.send(JSON.stringify({type: 'game', subtype: 'createGame', data: {login: lg}}));
 }
 
 function sendDataAuth() {
