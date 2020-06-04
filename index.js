@@ -7,9 +7,6 @@ auth = '<div class="shadow"></div><form class="blockvhod" id="blockvhod"><input 
 document.getElementById('content').innerHTML += auth;
 
 
-
-
-
 socket.onopen = function() {
     console.log('- соединение с сокетом установлено');
     if($.cookie('session') != null) {
@@ -38,11 +35,42 @@ socket.onmessage = function(event) {
         }
     }
     if(message.type == 'game') {
+        if(message.subtype == 'gamesList') {
+            document.getElementById('field').innerHTML = '';
+            field = document.getElementById('field');
+            if(message.data.len != 0) {
+                lg = document.getElementById('login').innerHTML;
+                console.log(message.data.len);
+                for(let i = 0; i < message.data.len; i++) {
+                    console.log('i = ' + i);
+                    console.log('host = ' + message.data.logHost[i]);
+                    console.log('guest = ' + message.data.logGuest[i]);
+                    if(lg == message.data.logHost[i]) {
+                        if(message.data.logGuest[i] != "0") {
+                            field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost[i] +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest[i] + '</div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                        } else {
+                            field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost[i] +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest"></div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                        }
+                    } else
+                    if(lg == message.data.logGuest[i]) {
+                        field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost[i] +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest[i] + '</div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                    } else {
+                        field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">' + message.data.logHost[i] + '</div><input class="F4" type="submit" name="pris" value="ПРИСОЕДИНИТЬСЯ" autocomplete="off"></div>' + field.innerHTML;
+                    }
+                }
+            }
+        }
         if(message.subtype == 'createGame') {
             if(message.total == 'allow') {
+                lg = message.data.login;
+                console.log('Игрок ' + message.data.login + ' создаёт комнату');
                 field = document.getElementById('field');
-                lg = document.getElementById('login').innerHTML;
-                field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ lg +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3">НИК ВОШЕДШЕГО</div><img id="delete" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                if(lg == document.getElementById('login').innerHTML) {
+                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ lg +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest"></div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                } else {
+                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">' + lg + '</div><input class="F4" type="submit" name="pris" value="ПРИСОЕДИНИТЬСЯ" autocomplete="off"></div>' + field.innerHTML;
+                }
+                
             }
         }
     }
@@ -57,7 +85,7 @@ $('#submitAuth').click(sendDataAuth);
 
 
 function createGame() {
-    lg = document.getElementById('login').innerHTML;
+    let lg = document.getElementById('login').innerHTML;
     console.log('Создаём игру');
     socket.send(JSON.stringify({type: 'game', subtype: 'createGame', data: {login: lg}}));
 }
@@ -74,7 +102,11 @@ function pushMainContent(login) {
     document.getElementById('login').innerHTML = login;
 }
 
-
+function del() {
+    let lg = document.getElementById('login').innerHTML;
+    console.log('Удаляем комнату');
+    socket.send(JSON.stringify({type: 'game', subtype: 'deleteGame', data: {login: lg}}));
+}
 
 
 // if(message.total == 'success') {

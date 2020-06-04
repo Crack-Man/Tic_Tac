@@ -13,14 +13,6 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 let clients = {};
 
-app.post('/auth', function(req, res) {
-    let connection = sql.createConnection({host: 'http://192.168.0.14/', user: 'root', password: '', database: 'tictac'});
-    connection.connect();
-    connection.query('SELECT * FROM users WHERE email = "' + req.body.email + '"', function(error, results, fields) {
-
-    });
-});
-
 let httpp = http.createServer(app).listen(8000, function(){console.log('- http-сервер запущен');});
 const WebSocket = new WebSocketLib.Server({
     port: 3000
@@ -32,6 +24,26 @@ WebSocket.on('connection', ws => {
     let id = Math.random();
     clients[id] = {WebSocket: ws};
     console.log('Новое соединение ' + id);
+
+    let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+    conn.connect();
+    conn.query('SELECT * FROM games', function(error, results, fields) {
+        if(results.length != 0) {
+            WebSocket.clients.forEach(client => {
+                if(client.readyState == WebSocketLib.OPEN) {
+                    client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length, logHost: results.loginHost, logGuest: results.loginGuest}}));
+                }
+            });
+        } else {
+            WebSocket.clients.forEach(client => {
+                if(client.readyState == WebSocketLib.OPEN) {
+                    client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: 0}}));
+                }
+            });
+        }
+    });
+
+
     ws.on('message', function(message) {
         message = JSON.parse(message);
         if(message.type == 'auth') {
@@ -96,41 +108,71 @@ WebSocket.on('connection', ws => {
             }
         } else if(message.type == 'game') {
             if(message.subtype == 'createGame') {
-                let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                conn.query('SELECT * FROM users WHERE `login` = "' + message.data.login + '"', function(error, results, fields) {
-                    if(results.length != 0) {
-                        idHost = results[0].id;
-                        conn.end();
-                        conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                        conn.connect();
-                        conn.query('SELECT * FROM games WHERE `idHost` = ' + idHost, function(error, results, fields) {
+                let logHost = message.data.login;
+                let con = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                con.connect(function(err) {
+                    if (err) {
+                      console.error('error connecting: ' + err.stack);
+                      return;
+                    }
+                });
+                con.query('SELECT * FROM games WHERE `loginHost` = "' + logHost + '"', function(error, results, fields) {
+                    if(results.length == 0) {
+                        con.end();
+                        let cn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                        cn.connect();
+                        cn.query('SELECT * FROM games WHERE `loginGuest` = "' + logHost + '"', function(error, results, fields) {
                             if(results.length == 0) {
-                                conn.end();
-                                conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                                conn.connect();
-                                conn.query('SELECT * FROM games WHERE `idGuest` = ' + idHost, function(error, results, fields) {
-                                    if(results.length == 0) {
-                                        conn.end();
-                                        conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                                        conn.connect();
-                                        conn.query('INSERT INTO games VALUES (id,' + idHost + ', 0)');
-                                        conn.end();
-                                        console.log('Вы можете создать комнату');
-                                        ws.send(JSON.stringify({type: 'game', subtype: 'createGame', total: 'allow'}));
-                                    } else {
-                                        console.log('Невозможно создать комнату');
-                                        ws.send(JSON.stringify({type: 'game', subtype: 'createGame', total: 'ban'}));
-                                        conn.end();
+                                cn.end();
+                                cn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                                cn.connect();
+                                cn.query('INSERT INTO games VALUES (id, "' + logHost + '", "")');
+                                cn.end();
+                                console.log('Вы можете создать комнату');
+                                WebSocket.clients.forEach(client => {
+                                    if(client.readyState == WebSocketLib.OPEN) {
+                                        client.send(JSON.stringify({type: 'game', subtype: 'createGame', total: 'allow', data: {login: logHost}}));
                                     }
                                 });
                             } else {
                                 console.log('Невозможно создать комнату');
                                 ws.send(JSON.stringify({type: 'game', subtype: 'createGame', total: 'ban'}));
-                                conn.end();
+                                cn.end();
+                            }
+                        });
+                    } else {
+                        console.log('Невозможно создать комнату');
+                        ws.send(JSON.stringify({type: 'game', subtype: 'createGame', total: 'ban'}));
+                        con.end();
+                    }
+                });
+
+            }
+            if(message.subtype == 'deleteGame') {
+                let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                conn.connect();
+                conn.query('DELETE FROM `games` WHERE loginHost = "' + message.data.login + '"');
+                conn.end();
+                console.log('Комната удалена');
+                con = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                con.connect();
+                con.query('SELECT * FROM games', function(error, results, fields) {
+                    if(results.length != 0) {
+                        con.end();
+                        WebSocket.clients.forEach(client => {
+                            if(client.readyState == WebSocketLib.OPEN) {
+                                client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length, logHost: results.loginHost, logGuest: results.loginGuest}}));
+                            }
+                        });
+                    } else {
+                        con.end();
+                        WebSocket.clients.forEach(client => {
+                            if(client.readyState == WebSocketLib.OPEN) {
+                                client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: 0}}));
                             }
                         });
                     }
-                });
+                }); 
             }
         }
     });
