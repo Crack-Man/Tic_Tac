@@ -25,21 +25,15 @@ WebSocket.on('connection', ws => {
     clients[id] = {WebSocket: ws};
     console.log('Новое соединение ' + id);
 
-    let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-    conn.connect();
-    conn.query('SELECT * FROM games', function(error, results, fields) {
+    let con = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+    con.connect();
+    con.query('SELECT * FROM games', function(error, results, fields) {
+        console.log('Комнат на сервере: ' + results.length);
         if(results.length != 0) {
-            WebSocket.clients.forEach(client => {
-                if(client.readyState == WebSocketLib.OPEN) {
-                    client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length, logHost: results.loginHost, logGuest: results.loginGuest}}));
-                }
-            });
+            con.end();
+            ws.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
         } else {
-            WebSocket.clients.forEach(client => {
-                if(client.readyState == WebSocketLib.OPEN) {
-                    client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: 0}}));
-                }
-            });
+            con.end();
         }
     });
 
@@ -151,28 +145,42 @@ WebSocket.on('connection', ws => {
             if(message.subtype == 'deleteGame') {
                 let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
                 conn.connect();
-                conn.query('DELETE FROM `games` WHERE loginHost = "' + message.data.login + '"');
-                conn.end();
-                console.log('Комната удалена');
-                con = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                con.connect();
-                con.query('SELECT * FROM games', function(error, results, fields) {
-                    if(results.length != 0) {
-                        con.end();
-                        WebSocket.clients.forEach(client => {
-                            if(client.readyState == WebSocketLib.OPEN) {
-                                client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length, logHost: results.loginHost, logGuest: results.loginGuest}}));
-                            }
-                        });
-                    } else {
-                        con.end();
-                        WebSocket.clients.forEach(client => {
-                            if(client.readyState == WebSocketLib.OPEN) {
-                                client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: 0}}));
-                            }
-                        });
-                    }
-                }); 
+                conn.query('DELETE FROM `games` WHERE loginHost = "' + message.data.login + '"', function(error, results, fields) {
+                    console.log('Комната удалена');
+                    conn.end();
+                    conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                    conn.connect();
+                    conn.query('SELECT * FROM games', function(error, results, fields) {
+                        console.log('Комнат на сервере: ' + results.length);
+                        if(results.length != 0) {
+                            conn.end();
+                            WebSocket.clients.forEach(client => {
+                                if(client.readyState == WebSocketLib.OPEN) {
+                                    console.log('Говорим клиенту, что удалили');
+                                    client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
+                                }
+                            });
+                        } else {
+                            conn.end();
+                            WebSocket.clients.forEach(client => {
+                                if(client.readyState == WebSocketLib.OPEN) {
+                                    console.log('Говорим клиенту, что удалили');
+                                    client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: 0}}));
+                                }
+                            });
+                        }
+                    }); 
+                });
+                
+            }
+            if(message.subtype == 'getGame') {
+                let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                conn.connect();
+                conn.query('SELECT * FROM games', function(error, results, fields) {
+                    conn.end();
+                    console.log('Найден:' + results[message.data.index].loginHost);
+                    ws.send(JSON.stringify({type: 'game', subtype: 'gamesList1', total: 'sendGame', data: {logHost: results[message.data.index].loginHost, logGuest: results[message.data.index].loginGuest},}));
+                });
             }
         }
     });

@@ -36,27 +36,57 @@ socket.onmessage = function(event) {
     }
     if(message.type == 'game') {
         if(message.subtype == 'gamesList') {
-            document.getElementById('field').innerHTML = '';
             field = document.getElementById('field');
+            field.innerHTML = '';
+            console.log('Комнат в клиенте: ' + message.data.len);
             if(message.data.len != 0) {
-                lg = document.getElementById('login').innerHTML;
-                console.log(message.data.len);
+                let lg = document.getElementById('login').innerHTML;
+                field.innerHTML = '';
                 for(let i = 0; i < message.data.len; i++) {
-                    console.log('i = ' + i);
-                    console.log('host = ' + message.data.logHost[i]);
-                    console.log('guest = ' + message.data.logGuest[i]);
-                    if(lg == message.data.logHost[i]) {
-                        if(message.data.logGuest[i] != "0") {
-                            field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost[i] +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest[i] + '</div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
-                        } else {
-                            field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost[i] +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest"></div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
-                        }
-                    } else
-                    if(lg == message.data.logGuest[i]) {
-                        field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost[i] +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest[i] + '</div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                    socket.send(JSON.stringify({type: 'game', subtype:'getGame', data: {index: i}}));
+                    // if(socket.onmessage) {
+                    //     let mes = JSON.parse(event.data);
+                    //     if(mes.total == 'sendGame') {
+                    //         console.log('Комната: ' + mes.data.logHost);
+                    //         if(lg == mes.data.logHost) {
+                    //             if(mes.data.logGuest != "") {
+                    //                 field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ mes.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + mes.data.logGuest + '</div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                    //             } else {
+                    //                 field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ mes.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest"></div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                    //             }
+                    //         } else
+                    //         if(lg == mes.data.logGuest) {
+                    //             field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ mes.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + mes.data.logGuest + '</div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                    //         } else
+                    //         if(mes.data.logGuest != "") {
+                    //             field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ mes.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + mes.data.logGuest + '</div></div>' + field.innerHTML;
+                    //         } else {
+                    //             field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">' + mes.data.logHost + '</div><input class="F4" type="submit" name="pris" value="ПРИСОЕДИНИТЬСЯ" autocomplete="off"></div>' + field.innerHTML;
+                    //         }
+                    //     }
+                    // }                    
+                }
+            }
+        }
+        if(message.subtype == 'gamesList1') {
+            if(message.total == 'sendGame') {
+                console.log('Комната: ' + message.data.logHost);
+                let lg = document.getElementById('login').innerHTML;
+                field = document.getElementById('field');
+                if(lg == message.data.logHost) {
+                    if(message.data.logGuest != "") {
+                        field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest + '</div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
                     } else {
-                        field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">' + message.data.logHost[i] + '</div><input class="F4" type="submit" name="pris" value="ПРИСОЕДИНИТЬСЯ" autocomplete="off"></div>' + field.innerHTML;
+                        field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest"></div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
                     }
+                } else
+                if(lg == message.data.logGuest) {
+                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest + '</div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                } else
+                if(message.data.logGuest != "") {
+                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest + '</div></div>' + field.innerHTML;
+                } else {
+                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">' + message.data.logHost + '</div><input class="F4" type="submit" name="pris" value="ПРИСОЕДИНИТЬСЯ" autocomplete="off"></div>' + field.innerHTML;
                 }
             }
         }
