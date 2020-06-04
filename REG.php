@@ -61,7 +61,10 @@
                 id,
                 '$Email',
                 '$Login',
-                '$Password'
+                '$Password',
+				0,
+				0,
+				0
 				)";
 			$result = mysqli_query($conn, $sql) or die("Ошибка ".mysqli_error($conn));
             $Mes = "Регистрация выполнена успешно.";

@@ -25,17 +25,7 @@ WebSocket.on('connection', ws => {
     clients[id] = {WebSocket: ws};
     console.log('Новое соединение ' + id);
 
-    let con = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-    con.connect();
-    con.query('SELECT * FROM games', function(error, results, fields) {
-        console.log('Комнат на сервере: ' + results.length);
-        if(results.length != 0) {
-            con.end();
-            ws.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
-        } else {
-            con.end();
-        }
-    });
+    
 
 
     ws.on('message', function(message) {
@@ -56,7 +46,7 @@ WebSocket.on('connection', ws => {
                             clients[id].email = results[0].email;
                             let log = results[0].login;
                             connection.end();
-                            ws.send(JSON.stringify({type: 'auth', total: 'successAuthSession', data: {login: log}}));
+                            ws.send(JSON.stringify({type: 'auth', total: 'successAuthSession', data: {login: log, win: results[0].win, lose: results[0].lose, draw: results[0].draw}}));
                         });
                     }
                     else {
@@ -84,7 +74,7 @@ WebSocket.on('connection', ws => {
                             let log = results[0].login;
                             let ses = genstr();
                             console.log('Создаём куки: ' + ses);
-                            ws.send(JSON.stringify({type: 'auth', total: 'successAuth', data: {session: ses, login: log}}));
+                            ws.send(JSON.stringify({type: 'auth', total: 'successAuth', data: {session: ses, login: log, win: results[0].win, lose: results[0].lose, draw: results[0].draw}}));
                             connection.end();
                             let connectiona = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
                             connectiona.connect();
@@ -101,6 +91,19 @@ WebSocket.on('connection', ws => {
                 });
             }
         } else if(message.type == 'game') {
+            if(message.subtype == 'who') {
+                let con = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                con.connect();
+                con.query('SELECT * FROM games', function(error, results, fields) {
+                    console.log('Комнат на сервере: ' + results.length);
+                    if(results.length != 0) {
+                        con.end();
+                        ws.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
+                    } else {
+                        con.end();
+                    }
+                });
+            }
             if(message.subtype == 'createGame') {
                 let logHost = message.data.login;
                 let con = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});

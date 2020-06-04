@@ -13,6 +13,7 @@ socket.onopen = function() {
         console.log('- куки найдены');
         socket.send(JSON.stringify({type: 'auth', subtype:'authSession', data: {session: $.cookie('session')}}));
     }
+    socket.send(JSON.stringify({type: 'game', subtype: 'who'}));
 };
 
 socket.onerror = function(error) {
@@ -26,12 +27,12 @@ socket.onmessage = function(event) {
             console.log('Куки получены с сервера: ' + message.data.session);
             $.cookie("session", message.data.session,  {expires: 7, path: '/'});
             console.log('Куки созданы: ' + $.cookie("session"));
-            pushMainContent(message.data.login);
+            pushMainContent(message.data.login, message.data.win, message.data.lose, message.data.draw);
         } else if(message.total == 'failedAuth'){
             document.getElementById('blockvhod').innerHTML += '<div class="Error">Неверный E-Mail или пароль</div>';
             $('#submitAuth').click(sendDataAuth);
         } else if(message.total == 'successAuthSession') {
-            pushMainContent(message.data.login);
+            pushMainContent(message.data.login, message.data.win, message.data.lose, message.data.draw);
         }
     }
     if(message.type == 'game') {
@@ -125,11 +126,14 @@ function sendDataAuth() {
     socket.send(JSON.stringify({type: 'auth', subtype:'sendAuth', data: {email: $('#authEmail').val(), password: $('#authPassword').val()}}));
 }
 
-function pushMainContent(login) {
+function pushMainContent(login, win, lose, draw) {
     document.getElementById('content').innerHTML = content;
     document.getElementById('vihod').style.display = 'block';
     document.getElementById('login').style.display = 'block';
     document.getElementById('login').innerHTML = login;
+    document.getElementById('win').innerHTML = win;
+    document.getElementById('lose').innerHTML = lose;
+    document.getElementById('draw').innerHTML = draw;
 }
 
 function del() {
