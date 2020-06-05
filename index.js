@@ -82,12 +82,12 @@ socket.onmessage = function(event) {
                     }
                 } else
                 if(lg == message.data.logGuest) {
-                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest + '</div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
+                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest + '</div>' + field.innerHTML;
                 } else
                 if(message.data.logGuest != "") {
                     field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ message.data.logHost +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest">' + message.data.logGuest + '</div></div>' + field.innerHTML;
                 } else {
-                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">' + message.data.logHost + '</div><input class="F4" type="submit" name="pris" value="ПРИСОЕДИНИТЬСЯ" autocomplete="off"></div>' + field.innerHTML;
+                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">' + message.data.logHost + '</div><button id="'+ lg +'" onclick="socket.send(JSON.stringify({type: \'game\', subtype: \'joinGame\', total: \'ask\', data: {logHost: this.id, logGuest: document.getElementById(\'login\').innerHTML}}));" class="F4">ПРИСОЕДИНИТЬСЯ</button></div>' + field.innerHTML;
                 }
             }
         }
@@ -99,13 +99,27 @@ socket.onmessage = function(event) {
                 if(lg == document.getElementById('login').innerHTML) {
                     field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">'+ lg +'</div><div class="F2">ВОШЕДШИЙ</div><div class="F3" id="guest"></div><img id="delete" onclick="del();" class="image" src="images/delete.png"></div>' + field.innerHTML;
                 } else {
-                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">' + lg + '</div><input class="F4" type="submit" name="pris" value="ПРИСОЕДИНИТЬСЯ" autocomplete="off"></div>' + field.innerHTML;
+                    field.innerHTML = '<div class="F1"><div class="F2">СОЗДАТЕЛЬ</div><div class="F3">' + lg + '</div><button id="'+ lg +'" onclick="socket.send(JSON.stringify({type: \'game\', subtype: \'joinGame\', total: \'ask\', data: {logHost: this.id, logGuest: document.getElementById(\'login\').innerHTML}}));" class="F4">ПРИСОЕДИНИТЬСЯ</button></div>' + field.innerHTML;
                 }
                 
             }
         }
+        if(message.subtype == 'allowGame') {
+            socket.send(JSON.stringify({type: 'game', subtype: 'joinGame', total: 'update', data: {logHost: message.data.logHost, logGuest: message.data.logGuest}}));
+        }
+        if(message.subtype == 'startGame'){
+            let lg = document.getElementById('login').innerHTML;
+            if((message.data.logHost == lg) || (message.data.logGuest == lg)) {
+                alert('Игра началась');
+            }
+        }
     }
 }
+
+let btn = document.getElementsByClassName('button');
+for(let i = 0; i < btn.length; i++)
+    btn[i].onclick = function() {alert(this.id)};
+
 function Out() {
     console.log('Выходим');
     $.cookie("session", null);

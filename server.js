@@ -185,6 +185,49 @@ WebSocket.on('connection', ws => {
                     ws.send(JSON.stringify({type: 'game', subtype: 'gamesList1', total: 'sendGame', data: {logHost: results[message.data.index].loginHost, logGuest: results[message.data.index].loginGuest},}));
                 });
             }
+            if(message.subtype == "joinGame") {
+                if(message.total == "ask") {
+                    let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                    conn.connect();
+                    conn.query('SELECT * FROM games WHERE loginHost = "' + message.data.logGuest + '"', function(error, results, fields) {
+                        if(results.length == 0) {
+                            conn.end();
+                            conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                            conn.connect();
+                            conn.query('SELECT * FROM games WHERE loginGuest = "' + message.data.logGuest + '"', function(error, results, fields) {
+                                if(results.length == 0) {
+                                    ws.send(JSON.stringify({type: 'game', subtype: 'allowGame', data: {logHost: message.data.logHost, logGuest: message.data.logGuest}}));
+                                }
+                            });
+                        }
+                    });
+                }
+                if(message.total == "update") {
+                    let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                    conn.connect();
+                    conn.query('UPDATE `games` SET `loginGuest`= "' + message.data.logGuest + '" WHERE `loginHost` = "' + message.data.logHost + '"', function(error, results, fields) {
+                        console.log('Комната обновлена');
+                        conn.end();
+                        conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                        conn.connect();
+                        conn.query('SELECT * FROM games', function(error, results, fields) {
+                            console.log('Комнат на сервере: ' + results.length);
+                            if(results.length != 0) {
+                                conn.end();
+                                WebSocket.clients.forEach(client => {
+                                    if(client.readyState == WebSocketLib.OPEN) {
+                                        console.log('Говорим клиенту, что обновили');
+                                        client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
+                                        client.send(JSON.stringify({type: 'game', subtype: 'startGame', data: {logHost: message.data.logHost, logGuest: message.data.logGuest}}));
+                                    }
+                                });
+                            } else {
+                                conn.end();
+                            }
+                        }); 
+                    });
+                } 
+            }
         }
     });
 });
