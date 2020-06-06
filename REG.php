@@ -82,7 +82,7 @@
 </head>
 
 <body>
-	<div class="glavnaya"><a href="INDEX.php">ГЛАВНАЯ</a></div>	
+	<div class="glavnaya" onclick="window.open('http://192.168.0.14:8080/');">ГЛАВНАЯ</div>	
 	<div class="vhod" ><a href="VHOD.php">ВХОД</a></div>
 	<div class="reg"><a href="REG.php">РЕГИСТРАЦИЯ</a></div>	
 

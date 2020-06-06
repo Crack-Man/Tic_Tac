@@ -214,19 +214,168 @@ WebSocket.on('connection', ws => {
                             console.log('Комнат на сервере: ' + results.length);
                             if(results.length != 0) {
                                 conn.end();
-                                WebSocket.clients.forEach(client => {
-                                    if(client.readyState == WebSocketLib.OPEN) {
-                                        console.log('Говорим клиенту, что обновили');
-                                        client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
-                                        client.send(JSON.stringify({type: 'game', subtype: 'startGame', data: {logHost: message.data.logHost, logGuest: message.data.logGuest}}));
-                                    }
-                                });
+                                let g = Math.floor(Math.random() * 2);
+                                console.log('g = ' + g);
+                                if(g == 1) {
+                                    console.log('Первый ходит ' + message.data.logHost);
+                                    WebSocket.clients.forEach(client => {
+                                        if(client.readyState == WebSocketLib.OPEN) {
+                                            console.log('Говорим клиенту, что обновили');
+                                            client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
+                                            client.send(JSON.stringify({type: 'game', subtype: 'startGame', data: {logHost: message.data.logHost, logGuest: message.data.logGuest, turn: message.data.logHost, wait: message.data.logGuest, x: message.data.logHost}}));
+                                        }
+                                    });
+                                } else {
+                                    console.log('Первый ходит ' + message.data.logGuest);
+                                    WebSocket.clients.forEach(client => {
+                                        if(client.readyState == WebSocketLib.OPEN) {
+                                            console.log('Говорим клиенту, что обновили');
+                                            client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
+                                            client.send(JSON.stringify({type: 'game', subtype: 'startGame', data: {logHost: message.data.logHost, logGuest: message.data.logGuest, turn: message.data.logGuest, wait: message.data.logHost, x: message.data.logGuest}}));
+                                        }
+                                    });
+                                }
                             } else {
                                 conn.end();
                             }
                         }); 
                     });
-                } 
+                }
+            }
+            if(message.subtype == "play") {
+                if(message.total == 'addFigure') {
+                    WebSocket.clients.forEach(client => {
+                        if(client.readyState == WebSocketLib.OPEN) {
+                            client.send(JSON.stringify({type: 'game', subtype: 'processGame', data: {idField: message.data.idField, logHost: message.data.logHost, logGuest: message.data.logGuest, turn: message.data.turn, wait: message.data.wait, figure: message.data.figure}}));
+                        }
+                    });
+                }
+                if(message.total == 'endWin') {
+                    let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                    conn.connect();
+                    conn.query('DELETE FROM `games` WHERE loginHost = "' + message.win + '"', function(error, results, fields) {
+                        conn.end();
+                        conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                        conn.connect();
+                        conn.query('UPDATE `users` SET `win` = `win` + 1 WHERE `login`= "' + message.win + '"', function(error, results, fields) {
+                            conn.end();
+                            conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                            conn.connect();
+                            conn.query('SELECT * FROM users WHERE `login`= "' + message.win + '"', function(error, results, fields) {
+                                if(results.length != 0) {
+                                    ws.send(JSON.stringify({type: 'game', subtype: 'stat', data: {win: results[0].win, lose: results[0].lose, draw: results[0].draw}}));
+                                }
+                            });
+                            conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                            conn.connect();
+                            conn.query('SELECT * FROM games', function(error, results, fields) {
+                                console.log('Комнат на сервере: ' + results.length);
+                                if(results.length != 0) {
+                                    conn.end();
+                                    WebSocket.clients.forEach(client => {
+                                        if(client.readyState == WebSocketLib.OPEN) {
+                                            console.log('Говорим клиенту, что удалили');
+                                            client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
+                                        }
+                                    });
+                                } else {
+                                    conn.end();
+                                    WebSocket.clients.forEach(client => {
+                                        if(client.readyState == WebSocketLib.OPEN) {
+                                            console.log('Говорим клиенту, что удалили');
+                                            client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: 0}}));
+                                        }
+                                    });
+                                }
+                            });
+                            
+                        });
+                    });
+                }
+                if(message.total == 'endLose') {
+                    let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                    conn.connect();
+                    conn.query('DELETE FROM `games` WHERE loginHost = "' + message.lose + '"', function(error, results, fields) {
+                        conn.end();
+                        conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                        conn.connect();
+                        conn.query('UPDATE `users` SET `lose` = `lose` + 1 WHERE `login`= "' + message.lose + '"', function(error, results, fields) {
+                            conn.end();
+                            conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                            conn.connect();
+                            conn.query('SELECT * FROM users WHERE `login`= "' + message.lose + '"', function(error, results, fields) {
+                                if(results.length != 0) {
+                                    ws.send(JSON.stringify({type: 'game', subtype: 'stat', data: {win: results[0].win, lose: results[0].lose, draw: results[0].draw}}));
+                                }
+                            });
+                            conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                            conn.connect();
+                            conn.query('SELECT * FROM games', function(error, results, fields) {
+                                console.log('Комнат на сервере: ' + results.length);
+                                if(results.length != 0) {
+                                    conn.end();
+                                    WebSocket.clients.forEach(client => {
+                                        if(client.readyState == WebSocketLib.OPEN) {
+                                            console.log('Говорим клиенту, что удалили');
+                                            client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
+                                        }
+                                    });
+                                } else {
+                                    conn.end();
+                                    WebSocket.clients.forEach(client => {
+                                        if(client.readyState == WebSocketLib.OPEN) {
+                                            console.log('Говорим клиенту, что удалили');
+                                            client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: 0}}));
+                                        }
+                                    });
+                                }
+                            });
+                            
+                        });
+                    });
+                }
+                if(message.total == 'endDraw') {
+                    let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                    conn.connect();
+                    conn.query('DELETE FROM `games` WHERE loginHost = "' + message.draw + '"', function(error, results, fields) {
+                        conn.end();
+                        conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                        conn.connect();
+                        conn.query('UPDATE `users` SET `draw` = `draw` + 1 WHERE `login`= "' + message.draw + '"', function(error, results, fields) {
+                            conn.end();
+                            conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                            conn.connect();
+                            conn.query('SELECT * FROM users WHERE `login`= "' + message.draw + '"', function(error, results, fields) {
+                                if(results.length != 0) {
+                                    ws.send(JSON.stringify({type: 'game', subtype: 'stat', data: {win: results[0].win, lose: results[0].lose, draw: results[0].draw}}));
+                                }
+                            });
+                            conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
+                            conn.connect();
+                            conn.query('SELECT * FROM games', function(error, results, fields) {
+                                console.log('Комнат на сервере: ' + results.length);
+                                if(results.length != 0) {
+                                    conn.end();
+                                    WebSocket.clients.forEach(client => {
+                                        if(client.readyState == WebSocketLib.OPEN) {
+                                            console.log('Говорим клиенту, что удалили');
+                                            client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: results.length}}));
+                                        }
+                                    });
+                                } else {
+                                    conn.end();
+                                    WebSocket.clients.forEach(client => {
+                                        if(client.readyState == WebSocketLib.OPEN) {
+                                            console.log('Говорим клиенту, что удалили');
+                                            client.send(JSON.stringify({type: 'game', subtype: 'gamesList', data: {len: 0}}));
+                                        }
+                                    });
+                                }
+                            });
+                            
+                        });
+                    });
+                }
             }
         }
     });

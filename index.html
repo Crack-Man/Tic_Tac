@@ -20,9 +20,49 @@
 			</div>
 			<div class=N2>
 				<div class=N3 onclick="createGame()"> СОЗДАТЬ ИГРУ</div>
-				<div class=N3> ИГРАТЬ С ИИ</div>
+				<div class=N3 onclick="AIGame()"> ИГРАТЬ С ИИ</div>
 			</div>
 		</div>
+		<img id="dele" class='dele' onclick="closeGame()" src="images/delete.png">
+		<div class="messageGame" id="messageGame"></div>
+		<div class="game" id="game">
+			<div class="line">
+				<div class="gameField" id="1", onclick="clicked(this.id)"></div>
+				<div class="gameField" id="2", onclick="clicked(this.id)"></div>
+				<div class="gameField" id="3", onclick="clicked(this.id)"></div>
+			</div>
+			<div class="line">
+				<div class="gameField" id="4", onclick="clicked(this.id)"></div>
+				<div class="gameField" id="5", onclick="clicked(this.id)"></div>
+				<div class="gameField" id="6", onclick="clicked(this.id)"></div>
+			</div>
+			<div class="line">
+				<div class="gameField" id="7", onclick="clicked(this.id)"></div>
+				<div class="gameField" id="8", onclick="clicked(this.id)"></div>
+				<div class="gameField" id="9", onclick="clicked(this.id)"></div>
+			</div>
+		</div>
+
+		<img id="de" class='dele' onclick="closeGameAI()" src="images/delete.png">
+		<div class="messageGame" id="msgGame"></div>
+		<div class="game" id="gameAI">
+			<div class="line">
+				<div class="gameField" id="11", onclick="clck(this.id)"></div>
+				<div class="gameField" id="12", onclick="clck(this.id)"></div>
+				<div class="gameField" id="13", onclick="clck(this.id)"></div>
+			</div>
+			<div class="line">
+				<div class="gameField" id="14", onclick="clck(this.id)"></div>
+				<div class="gameField" id="15", onclick="clck(this.id)"></div>
+				<div class="gameField" id="16", onclick="clck(this.id)"></div>
+			</div>
+			<div class="line">
+				<div class="gameField" id="17", onclick="clck(this.id)"></div>
+				<div class="gameField" id="18", onclick="clck(this.id)"></div>
+				<div class="gameField" id="19", onclick="clck(this.id)"></div>
+			</div>
+		</div>
+		
 		
 		<div class="stat">
 			<div class="stat1">
@@ -59,6 +99,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="jquery_cookies.js"></script>
 	<script src="index.js"></script>
+	<script src="AIGame.js"></script>
 </body>
 
 </html>

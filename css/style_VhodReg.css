@@ -204,23 +204,44 @@ A:active {
 }
 @media screen and (min-width:900px) and (max-width:1079px) {
 .N1 {
-    font-size: 80px;
+	font-size: 80px;
+	line-height: 180%;
 }
 }
 @media screen and (min-width:720px) and (max-width:899px) {
+.login {
+	font-size: 16px;
+}
+.vhod {
+	font-size: 16px;
+}
 .N1 {
-    font-size: 60px;
+	font-size: 60px;
+	line-height: 200%;
 }
 }
 @media screen and (min-width:540px) and (max-width:719px) {
+.login {
+	font-size: 16px;
+}
+.vhod {
+	font-size: 16px;
+}
 .N1 {
-    font-size: 45px;
+	font-size: 45px;
+	line-height: 280%;
 }
 }
 @media screen and (min-width:360px) and (max-width:539px) {
-.N1 {
-    font-size: 38px;
+.login {
+	font-size: 16px;
 }
+.vhod {
+	font-size: 16px;
+}
+.N1 {
+	font-size: 38px;
+	line-height: 350%;
 }
 @media screen and (min-width:180px) and (max-width:359px) {
 .N1 {
