@@ -26,6 +26,7 @@ function AIGame() {
     mesg.innerHTML = 'ИГРА С БОТОМ';
 }
 
+//AI сделано начало, и если бот играет крестиками, в остальном - рандом.
 function AI() {
     turn = false;
     krestFig = '<img src="images/krest.png" width="100%" height="100%">';

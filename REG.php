@@ -37,26 +37,26 @@
         $sql_login = "SELECT * FROM users WHERE login = '$Login'";
         $result_login = mysqli_query($conn, $sql_login);
         $row_login = $result_login->fetch_array(MYSQLI_ASSOC);
-        $test_login = $row_login['id'];
+        $test_login = $row_login['login'];
         if($test_login != NULL) {
             $Error_Login = "Такой логин уже существует.";
 			$Error = True;
         }
         
-        $sql_email = "SELECT * FROM users WHERE login = '$Email'";
+        $sql_email = "SELECT * FROM users WHERE email = '$Email'";
         $result_email = mysqli_query($conn, $sql_email);
         $row_email = $result_email->fetch_array(MYSQLI_ASSOC);
-        $test_email = $row_email['id'];
+        $test_email = $row_email['email'];
         if($test_email != NULL) {
             $Error_email = "Такой E-Mail уже существует.";
 			$Error = True;
         }
 
 		if(!$Error) {
-            $options = [
-                'cost' => 5,
-            ];
-            $Password_Hash = password_hash($Password, PASSWORD_BCRYPT, $options);
+            // $options = [
+            //     'cost' => 5,
+            // ];
+            // $Password_Hash = password_hash($Password, PASSWORD_BCRYPT, $options);
             $sql = "INSERT INTO `users` VALUES (
                 id,
                 '$Email',
@@ -82,7 +82,7 @@
 </head>
 
 <body>
-	<div class="glavnaya" onclick="window.open('http://192.168.0.14:8080/');">ГЛАВНАЯ</div>	
+	<div class="glavnaya" onclick="window.open('http://192.168.0.13:8080/');">ГЛАВНАЯ</div>	
 	<div class="vhod" ><a href="VHOD.php">ВХОД</a></div>
 	<div class="reg"><a href="REG.php">РЕГИСТРАЦИЯ</a></div>	
 

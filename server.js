@@ -34,14 +34,26 @@ WebSocket.on('connection', ws => {
             console.log('Получены данные типа "auth"');
             if (message.subtype == 'authSession') {
                 let connection = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                connection.connect();
+                connection.connect(err => {
+                    if (err) {
+                        console.log('Ошибка подключения к БД' + err);
+                        return err;
+                    }
+                    
+                });
                 connection.query('SELECT * FROM sessions WHERE `session` = "' + message.data.session + '"', function(error, results, fields) {            
                     if(results.length != 0) {
                         clients[id].uid = results[0].uid;
                         clients[id].sid = results[0].id;
                         connection.end();
                         connection = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                        connection.connect();
+                        connection.connect(err => {
+                            if (err) {
+                                console.log('Ошибка подключения к БД' + err);
+                                return err;
+                            }
+                            
+                        });
                         connection.query('SELECT * FROM users WHERE `id` = ' + clients[id].uid, function(error, results, fields) {
                             clients[id].email = results[0].email;
                             let log = results[0].login;
@@ -77,7 +89,12 @@ WebSocket.on('connection', ws => {
                             ws.send(JSON.stringify({type: 'auth', total: 'successAuth', data: {session: ses, login: log, win: results[0].win, lose: results[0].lose, draw: results[0].draw}}));
                             connection.end();
                             let connectiona = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                            connectiona.connect();
+                            connectiona.connect(err => {
+                                if (err) {
+                                    console.log('Ошибка подключения к БД' + err);
+                                    return err;
+                                }
+                            });
                             connectiona.query('INSERT INTO sessions (session, uid) value ("'+ ses + '",' + clients[id].uid +')');
                             connectiona.end();
                         } else {
@@ -93,7 +110,12 @@ WebSocket.on('connection', ws => {
         } else if(message.type == 'game') {
             if(message.subtype == 'who') {
                 let con = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                con.connect();
+                con.connect(err => {
+                    if (err) {
+                        console.log('Ошибка подключения к БД' + err);
+                        return err;
+                    }
+                });
                 con.query('SELECT * FROM games', function(error, results, fields) {
                     console.log('Комнат на сервере: ' + results.length);
                     if(results.length != 0) {
@@ -117,12 +139,22 @@ WebSocket.on('connection', ws => {
                     if(results.length == 0) {
                         con.end();
                         let cn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                        cn.connect();
+                        cn.connect(err => {
+                            if (err) {
+                                console.log('Ошибка подключения к БД' + err);
+                                return err;
+                            }
+                        });
                         cn.query('SELECT * FROM games WHERE `loginGuest` = "' + logHost + '"', function(error, results, fields) {
                             if(results.length == 0) {
                                 cn.end();
                                 cn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                                cn.connect();
+                                cn.connect(err => {
+                                    if (err) {
+                                        console.log('Ошибка подключения к БД' + err);
+                                        return err;
+                                    }
+                                });
                                 cn.query('INSERT INTO games VALUES (id, "' + logHost + '", "")');
                                 cn.end();
                                 console.log('Вы можете создать комнату');
@@ -147,12 +179,22 @@ WebSocket.on('connection', ws => {
             }
             if(message.subtype == 'deleteGame') {
                 let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                conn.connect();
+                conn.connect(err => {
+                    if (err) {
+                        console.log('Ошибка подключения к БД' + err);
+                        return err;
+                    }
+                });
                 conn.query('DELETE FROM `games` WHERE loginHost = "' + message.data.login + '"', function(error, results, fields) {
                     console.log('Комната удалена');
                     conn.end();
                     conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                    conn.connect();
+                    conn.connect(err => {
+                        if (err) {
+                            console.log('Ошибка подключения к БД' + err);
+                            return err;
+                        }
+                    });
                     conn.query('SELECT * FROM games', function(error, results, fields) {
                         console.log('Комнат на сервере: ' + results.length);
                         if(results.length != 0) {
@@ -178,7 +220,12 @@ WebSocket.on('connection', ws => {
             }
             if(message.subtype == 'getGame') {
                 let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                conn.connect();
+                conn.connect(err => {
+                    if (err) {
+                        console.log('Ошибка подключения к БД' + err);
+                        return err;
+                    }
+                });
                 conn.query('SELECT * FROM games', function(error, results, fields) {
                     conn.end();
                     console.log('Найден:' + results[message.data.index].loginHost);
@@ -188,12 +235,22 @@ WebSocket.on('connection', ws => {
             if(message.subtype == "joinGame") {
                 if(message.total == "ask") {
                     let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                    conn.connect();
+                    conn.connect(err => {
+                        if (err) {
+                            console.log('Ошибка подключения к БД' + err);
+                            return err;
+                        }
+                    });
                     conn.query('SELECT * FROM games WHERE loginHost = "' + message.data.logGuest + '"', function(error, results, fields) {
                         if(results.length == 0) {
                             conn.end();
                             conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                            conn.connect();
+                            conn.connect(err => {
+                                if (err) {
+                                    console.log('Ошибка подключения к БД' + err);
+                                    return err;
+                                }
+                            });
                             conn.query('SELECT * FROM games WHERE loginGuest = "' + message.data.logGuest + '"', function(error, results, fields) {
                                 if(results.length == 0) {
                                     ws.send(JSON.stringify({type: 'game', subtype: 'allowGame', data: {logHost: message.data.logHost, logGuest: message.data.logGuest}}));
@@ -204,12 +261,22 @@ WebSocket.on('connection', ws => {
                 }
                 if(message.total == "update") {
                     let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                    conn.connect();
+                    conn.connect(err => {
+                        if (err) {
+                            console.log('Ошибка подключения к БД' + err);
+                            return err;
+                        }
+                    });
                     conn.query('UPDATE `games` SET `loginGuest`= "' + message.data.logGuest + '" WHERE `loginHost` = "' + message.data.logHost + '"', function(error, results, fields) {
                         console.log('Комната обновлена');
                         conn.end();
                         conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                        conn.connect();
+                        conn.connect(err => {
+                            if (err) {
+                                console.log('Ошибка подключения к БД' + err);
+                                return err;
+                            }
+                        });
                         conn.query('SELECT * FROM games', function(error, results, fields) {
                             console.log('Комнат на сервере: ' + results.length);
                             if(results.length != 0) {
@@ -252,22 +319,42 @@ WebSocket.on('connection', ws => {
                 }
                 if(message.total == 'endWin') {
                     let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                    conn.connect();
+                    conn.connect(err => {
+                        if (err) {
+                            console.log('Ошибка подключения к БД' + err);
+                            return err;
+                        }
+                    });
                     conn.query('DELETE FROM `games` WHERE loginHost = "' + message.win + '"', function(error, results, fields) {
                         conn.end();
                         conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                        conn.connect();
+                        conn.connect(err => {
+                            if (err) {
+                                console.log('Ошибка подключения к БД' + err);
+                                return err;
+                            }
+                        });
                         conn.query('UPDATE `users` SET `win` = `win` + 1 WHERE `login`= "' + message.win + '"', function(error, results, fields) {
                             conn.end();
                             conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                            conn.connect();
+                            conn.connect(err => {
+                                if (err) {
+                                    console.log('Ошибка подключения к БД' + err);
+                                    return err;
+                                }
+                            });
                             conn.query('SELECT * FROM users WHERE `login`= "' + message.win + '"', function(error, results, fields) {
                                 if(results.length != 0) {
                                     ws.send(JSON.stringify({type: 'game', subtype: 'stat', data: {win: results[0].win, lose: results[0].lose, draw: results[0].draw}}));
                                 }
                             });
                             conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                            conn.connect();
+                            conn.connect(err => {
+                                if (err) {
+                                    console.log('Ошибка подключения к БД' + err);
+                                    return err;
+                                }
+                            });
                             conn.query('SELECT * FROM games', function(error, results, fields) {
                                 console.log('Комнат на сервере: ' + results.length);
                                 if(results.length != 0) {
@@ -294,22 +381,42 @@ WebSocket.on('connection', ws => {
                 }
                 if(message.total == 'endLose') {
                     let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                    conn.connect();
+                    conn.connect(err => {
+                        if (err) {
+                            console.log('Ошибка подключения к БД' + err);
+                            return err;
+                        }
+                    });
                     conn.query('DELETE FROM `games` WHERE loginHost = "' + message.lose + '"', function(error, results, fields) {
                         conn.end();
                         conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                        conn.connect();
+                        conn.connect(err => {
+                            if (err) {
+                                console.log('Ошибка подключения к БД' + err);
+                                return err;
+                            }
+                        });
                         conn.query('UPDATE `users` SET `lose` = `lose` + 1 WHERE `login`= "' + message.lose + '"', function(error, results, fields) {
                             conn.end();
                             conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                            conn.connect();
+                            conn.connect(err => {
+                                if (err) {
+                                    console.log('Ошибка подключения к БД' + err);
+                                    return err;
+                                }
+                            });
                             conn.query('SELECT * FROM users WHERE `login`= "' + message.lose + '"', function(error, results, fields) {
                                 if(results.length != 0) {
                                     ws.send(JSON.stringify({type: 'game', subtype: 'stat', data: {win: results[0].win, lose: results[0].lose, draw: results[0].draw}}));
                                 }
                             });
                             conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                            conn.connect();
+                            conn.connect(err => {
+                                if (err) {
+                                    console.log('Ошибка подключения к БД' + err);
+                                    return err;
+                                }
+                            });
                             conn.query('SELECT * FROM games', function(error, results, fields) {
                                 console.log('Комнат на сервере: ' + results.length);
                                 if(results.length != 0) {
@@ -336,22 +443,42 @@ WebSocket.on('connection', ws => {
                 }
                 if(message.total == 'endDraw') {
                     let conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                    conn.connect();
+                    conn.connect(err => {
+                        if (err) {
+                            console.log('Ошибка подключения к БД' + err);
+                            return err;
+                        }
+                    });
                     conn.query('DELETE FROM `games` WHERE loginHost = "' + message.draw + '"', function(error, results, fields) {
                         conn.end();
                         conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                        conn.connect();
+                        conn.connect(err => {
+                            if (err) {
+                                console.log('Ошибка подключения к БД' + err);
+                                return err;
+                            }
+                        });
                         conn.query('UPDATE `users` SET `draw` = `draw` + 1 WHERE `login`= "' + message.draw + '"', function(error, results, fields) {
                             conn.end();
                             conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                            conn.connect();
+                            conn.connect(err => {
+                                if (err) {
+                                    console.log('Ошибка подключения к БД' + err);
+                                    return err;
+                                }
+                            });
                             conn.query('SELECT * FROM users WHERE `login`= "' + message.draw + '"', function(error, results, fields) {
                                 if(results.length != 0) {
                                     ws.send(JSON.stringify({type: 'game', subtype: 'stat', data: {win: results[0].win, lose: results[0].lose, draw: results[0].draw}}));
                                 }
                             });
                             conn = sql.createConnection({host: 'tictac', user: 'root', password: '', database: 'tictac'});
-                            conn.connect();
+                            conn.connect(err => {
+                                if (err) {
+                                    console.log('Ошибка подключения к БД' + err);
+                                    return err;
+                                }
+                            });
                             conn.query('SELECT * FROM games', function(error, results, fields) {
                                 console.log('Комнат на сервере: ' + results.length);
                                 if(results.length != 0) {
